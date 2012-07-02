@@ -9,8 +9,10 @@ module Gumby
     attr_reader :sorts
 
     def initialize target, &block
-      @filters = []
       @bools   = []
+      @filters = []
+      @p       = 1
+      @pp      = 50
       @sorts   = []
 
       instance_exec(&block) if block_given?
@@ -24,6 +26,11 @@ module Gumby
 
     def filter field, val
       @filters << Filter.new(field, val)
+    end
+
+    def paginate p, pp
+      @p  = p  if p
+      @pp = pp if pp
     end
 
     def sort field, direction
@@ -41,14 +48,17 @@ module Gumby
 
     def build
       {}.tap do |body|
-        body[:filter] = build_filters         unless @filters.empty?
-        body[:sort]   = @sorts.map(&:to_hash) unless @sorts.empty?
-
         unless @bools.empty?
           body[:query] ||= {}
 
           body[:query][:bool] = build_bools
         end
+
+        body[:filter] = build_filters         unless @filters.empty?
+        body[:sort]   = @sorts.map(&:to_hash) unless @sorts.empty?
+
+        body[:from] = (@p - 1) * @pp
+        body[:size] = @pp
       end
     end
 
