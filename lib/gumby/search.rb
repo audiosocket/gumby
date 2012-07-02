@@ -1,6 +1,7 @@
 require "gumby/bool_query"
 require "gumby/filter"
 require "gumby/sort"
+require "gumby/text_query"
 
 module Gumby
   class Search
@@ -37,7 +38,8 @@ module Gumby
       @sorts << Sort.new(field, direction)
     end
 
-    def text val
+    def text val, field = nil
+      @bools << TextQuery.new(val, field)
     end
 
     def to_hash
