@@ -8,13 +8,15 @@ module Gumby
     attr_reader :bools
     attr_reader :filters
     attr_reader :sorts
+    attr_reader :page
+    attr_reader :per_page
 
     def initialize target, &block
-      @bools   = []
-      @filters = []
-      @p       = 1
-      @pp      = 50
-      @sorts   = []
+      @bools    = []
+      @filters  = []
+      @page     = 1
+      @per_page = 50
+      @sorts    = []
 
       instance_exec(&block) if block_given?
 
@@ -26,12 +28,16 @@ module Gumby
     end
 
     def filter field, val
-      @filters << Filter.new(field, val)
+      filter = Filter.new(field, val)
+
+      @filters << filter
+
+      filter
     end
 
-    def paginate p, pp
-      @p  = p  if p
-      @pp = pp if pp
+    def paginate page, per_page
+      @page     = page     if page
+      @per_page = per_page if per_page
     end
 
     def sort field, direction
@@ -59,8 +65,8 @@ module Gumby
         body[:filter] = build_filters         unless @filters.empty?
         body[:sort]   = @sorts.map(&:to_hash) unless @sorts.empty?
 
-        body[:from] = (@p - 1) * @pp
-        body[:size] = @pp
+        body[:from] = (@page - 1) * @per_page
+        body[:size] = @per_page
       end
     end
 
