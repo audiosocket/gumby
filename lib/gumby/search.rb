@@ -27,7 +27,7 @@ module Gumby
       @bools << BoolQuery.new(field, val, :must_not)
     end
 
-    def filter field, val
+    def filter field, val = nil
       filter = Filter.new(field, val)
 
       @filters << filter
