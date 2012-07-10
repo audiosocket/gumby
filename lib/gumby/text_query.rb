@@ -10,7 +10,14 @@ module Gumby
     end
 
     def to_hash
-      { @filter => { @field => @val } }
+      {
+        @filter => {
+          @field => {
+            query:    @val,
+            operator: "and"
+          }
+        }
+      }
     end
   end
 end
