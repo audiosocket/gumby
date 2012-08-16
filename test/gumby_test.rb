@@ -7,6 +7,8 @@ describe Gumby do
       exclude :fruit, :tomato
 
       sort :fruit, :asc
+
+      randomize "salt"
     end
   end
 end

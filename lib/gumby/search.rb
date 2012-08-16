@@ -1,5 +1,6 @@
 require "gumby/bool_query"
 require "gumby/filter"
+require "gumby/randomizer"
 require "gumby/sort"
 require "gumby/text_query"
 
@@ -38,6 +39,10 @@ module Gumby
     def paginate page, per_page
       @page     = page     if page
       @per_page = per_page if per_page
+    end
+
+    def randomize salt
+      @sorts << Randomizer.new(salt)
     end
 
     def sort field, direction
