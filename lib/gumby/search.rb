@@ -41,8 +41,8 @@ module Gumby
       @per_page = per_page if per_page
     end
 
-    def randomize salt
-      @sorts << Randomizer.new(salt)
+    def randomize
+      @sorts << Randomizer.new
     end
 
     def sort field, direction

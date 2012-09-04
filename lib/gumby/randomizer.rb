@@ -1,15 +1,10 @@
 module Gumby
   class Randomizer
-    def initialize salt
-      @salt = salt
-    end
-
     def to_hash
       {
         "_script" => {
-          script: "salt.hashCode()",
+          script: "random() * 20",
           type:   "number",
-          params: { salt: @salt },
           order:  "asc"
         }
       }
