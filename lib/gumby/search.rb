@@ -13,11 +13,12 @@ module Gumby
     attr_reader :per_page
 
     def initialize target, &block
-      @bools    = []
-      @filters  = []
-      @page     = 1
-      @per_page = 50
-      @sorts    = []
+      @bools     = []
+      @filters   = []
+      @functions = []
+      @page      = 1
+      @per_page  = 50
+      @sorts     = []
 
       instance_exec(&block) if block_given?
 
@@ -53,6 +54,10 @@ module Gumby
       @bools << TextQuery.new(val, field)
     end
 
+    def function_score function
+      @functions << function
+    end
+
     def to_hash
       build
     end
@@ -60,19 +65,41 @@ module Gumby
     private
 
     def build
-      {}.tap do |body|
-        unless @bools.empty?
-          body[:query] ||= {}
+      body = {}
 
-          body[:query][:bool] = build_bools
+      unless @bools.empty?
+        body[:query] ||= {}
+
+        body[:query][:bool] = build_bools
+      end
+
+      body[:filter] = build_filters         unless @filters.empty?
+      body[:sort]   = @sorts.map(&:to_hash) unless @sorts.empty?
+
+      body[:from] = (@page - 1) * @per_page
+      body[:size] = @per_page
+
+      unless @functions.empty?
+
+        query = body.delete(:query)
+
+        body[:query] = {
+          function_score: {
+            functions: build_functions
+          }
+        }
+
+        if query
+          body[:query][:function_score][:query] = query
         end
 
-        body[:filter] = build_filters         unless @filters.empty?
-        body[:sort]   = @sorts.map(&:to_hash) unless @sorts.empty?
-
-        body[:from] = (@page - 1) * @per_page
-        body[:size] = @per_page
       end
+
+      if @functions.empty? && !@sorts.empty?
+        body[:sort] = @sorts.map(&:to_hash)
+      end
+
+      body
     end
 
     def build_bools
@@ -92,6 +119,10 @@ module Gumby
       @filters.each { |f| filters["and"] << f.to_hash }
 
       filters
+    end
+
+    def build_functions
+      @functions.dup
     end
   end
 end
