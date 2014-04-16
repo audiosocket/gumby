@@ -8,9 +8,22 @@ describe Gumby do
 
       sort :fruit, :asc
 
-      randomize "salt"
+      # randomize "salt"
     end
   end
+
+  it "boosts stuff" do
+    s = Gumby.search do
+      exclude :fruit, :tomato
+
+      sort :fruit, :asc
+
+      boost 4, :fruit, 34
+    end
+
+    p s.to_hash
+  end
+
 end
 
 
