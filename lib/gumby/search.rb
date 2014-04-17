@@ -58,6 +58,13 @@ module Gumby
       @functions << function
     end
 
+    def boost amount, field, val
+      @functions << {
+        boost:  amount,
+        filter: Filter.new(field,val).to_hash
+      }
+    end
+
     def to_hash
       build
     end
