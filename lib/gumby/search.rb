@@ -65,6 +65,10 @@ module Gumby
       }
     end
 
+    def clear_sort!
+      @sorts = []
+    end
+
     def to_hash
       build
     end
@@ -130,10 +134,6 @@ module Gumby
 
     def build_functions
       @functions.dup
-    end
-
-    def clear_sort!
-      @sorts = []
     end
   end
 end
