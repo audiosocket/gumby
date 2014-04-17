@@ -131,5 +131,9 @@ module Gumby
     def build_functions
       @functions.dup
     end
+
+    def clear_sort!
+      @sorts = []
+    end
   end
 end
