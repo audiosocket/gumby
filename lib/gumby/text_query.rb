@@ -5,7 +5,7 @@ module Gumby
     def initialize val, field
       @clause = :should
       @field  = field || :_all
-      @filter = :text
+      @filter = :match
       @val    = val
     end
 
