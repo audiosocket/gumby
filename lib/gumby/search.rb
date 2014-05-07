@@ -60,8 +60,8 @@ module Gumby
 
     def boost amount, field, val
       @functions << {
-        boost:  amount,
-        filter: Filter.new(field,val).to_hash
+        boost_factor:  amount,
+        filter:        Filter.new(field,val).to_hash
       }
     end
 
